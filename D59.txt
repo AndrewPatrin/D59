@@ -1,0 +1,81 @@
+1. Creating 2 users
+
+User.objects.create_user(username = 'user1')
+User.objects.create_user(username = 'user2')
+
+2. Creating 2 Author's model objs
+
+Author.objects.create(user = User.objects.get(username = 'user1'))
+Author.objects.create(user = User.objects.get(username = 'user2'))
+
+3. Adding categories to Category
+
+Category.objects.create(category = 'Sports') 
+Category.objects.create(category = 'Education') 
+Category.objects.create(category = 'Nature')
+Category.objects.create(category = 'Other')
+
+4. Creating 2 articels and 1 news
+
+Post.objects.create(author = Author.objects.get(pk=1), type = 'AR', post_title = 'In danger. The strange life and tragic death of Julia the gorilla.', 
+post_text = "In May 1982, Ineke Bonjer and Henk Lambertz, posing as a rich, childless German couple, borrowed a silver BMW coupé and drove up to a house in Westerlo, Belgium, that was surrounded by warehouses and security. Rene Corten, a tall, handsome man, somewhat ill at ease, was expecting them. He had sent them a copy of his price list that advertised more than 80 species, from black swans and hornbills to golden-bellied mangabeys and Australian cassowaries.")
+
+Post.objects.create(author = Author.objects.get(pk=1), type = 'AR', post_title = 'My small testing article.', post_text = "Nothing here")
+
+Post.objects.create(author = Author.objects.get(pk=2), post_title = 'Fantasy Football Daily Notes.', post_text = "Bears RB Khalil Herbert suffered a hip injury on Sunday against the Lions. Rams WR Cooper Kupp injured his ankle in the fourth quarter of the Rams' loss to the Cardinals on Sunday.")
+
+5. Adding categories to posts
+
+Post.objects.get(post_title = "In danger. The strange life and tragic death of Julia the gorilla.").category.add(Category.objects.get(category = 'Nature'))
+Post.objects.get(post_title = "In danger. The strange life and tragic death of Julia the gorilla.").category.add(Category.objects.get(category = 'Other'))  
+
+Post.objects.get(post_title = "My small testing article.").category.add(Category.objects.get(category = 'Education'))
+Post.objects.get(post_title = "My small testing article.").category.add(Category.objects.get(category = 'Other'))
+
+Post.objects.get(post_title = "Fantasy Football Daily Notes.").category.add(Category.objects.get(category = 'Sports'))
+Post.objects.get(post_title = "Fantasy Football Daily Notes.").category.add(Category.objects.get(category = 'Other'))
+
+6. Creating comments
+
+Comment.objects.create(post = Post.objects.get(pk=1), user = User.objects.get(pk=2), comment_text = "It's very sad story :(")
+Comment.objects.create(post = Post.objects.get(pk=1), user = User.objects.get(pk=2), comment_text = "Really sad")
+
+Comment.objects.create(post = Post.objects.get(pk=2), user = User.objects.get(pk=2), comment_text = "And???")
+
+Comment.objects.create(post = Post.objects.get(pk=3), user = User.objects.get(pk=1), comment_text = "So many injuries...")
+
+7. like() dislike()
+
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+
+Post.objects.get(pk=2).dislike()
+
+Post.objects.get(pk=3).like()
+
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=2).like()
+Comment.objects.get(pk=3).like()
+Comment.objects.get(pk=4).like()
+
+8. update Ratings
+
+Author.objects.get(pk=1).update_rating()
+Author.objects.get(pk=2).update_rating()
+
+9. Best Author
+
+best_author = Author.objects.order_by('-author_rating')[0]
+print(f"Best Author - {best_author.user.username} with {best_author.author_rating} rating points")
+
+10. Best Post
+
+best_post = Post.objects.order_by('-post_rating')[0]   
+print(f'\nBest post-\nPublished date - {best_post.published_date}\nusername - {best_post.author.user.username}\npost_rating - {best_post.post_rating}\ntitle - {best_post.post_title} \nText Preview - {best_post.preview()}')
+
+11. All comments of best post
+
+for i in best_post.comment_set.all(): print(f"\nComment-\nComment Date - {i.comment_date}\nUser - {i.user.username}\nRating - {i.comment_rating}\nText - {i.comment_text}")
+
